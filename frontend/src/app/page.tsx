@@ -1,12 +1,13 @@
 'use client'
 
-import Login from "@/components/Login"
+import Login, { LogOut } from "@/components/Login"
 import { closeChat, openChat } from "@/redux/features/chatBox"
-import { logOut } from "@/redux/features/isLoggedIn"
 import { RootState } from "@/redux/store"
+import { socket } from "@/socket/io"
 import Image from "next/image"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
+
 
 
 export default function Home() {
@@ -30,14 +31,22 @@ export default function Home() {
     "Roha adnsirnan"
   ]
 
+  useEffect(() => {
+    socket.on('message-received', (msg) => {
+      console.log(`message received :${msg}`);
+
+    })
+  }, [])
 
   function handleOpenChat(data: string) {
     dispatch(openChat(data))
   }
 
-  function handleSubmit(e: any) {
+  function sendMsg(e: any) {
     e.preventDefault();
     console.log("message sent," + newMsg);
+    socket.emit('new-message', { newMsg, userName })
+    setNewMsg("")
 
   }
 
@@ -50,11 +59,7 @@ export default function Home() {
         <nav className="fixed w-full h-15 flex justify-between items-center px-6 py-3 bg-gray-900 rounded-b-xl ">
           <h1>Chat App</h1>
           <h3>{userName}</h3>
-          <button
-            className="bg-gray-600 rounded-lg px-2 py-0.5 text-sm font-bold cursor-pointer"
-            onClick={() => dispatch(logOut())}>
-            Logout
-          </button>
+          <LogOut />
         </nav>
 
         <main className="w-full h-full flex pt-15">
@@ -89,7 +94,7 @@ export default function Home() {
               </div>
 
               <nav className="w-full  h-1.5/30 border-t pr-2">
-                <form onSubmit={handleSubmit} className="w-full h-full flex gap-2">
+                <form onSubmit={sendMsg} className="w-full h-full flex gap-2">
                   <input type="text"
                     placeholder="type your message here"
                     className="w-full p-2 outline-none"

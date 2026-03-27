@@ -15,11 +15,28 @@ const io = new Server(server, {
         methods: ["GET", "POST"],
         credentials: true
     }
+
 });
 
 io.on("connection", (socket) => {
-    console.log(`IO connected with ID:${socket.id}`);
-    socket.broadcast.emit("welcome", `Welcome to socket :${socket.id}`)
+    console.log(`socket connected with ID:${socket.id}`);
+    socket.on('disconnect', () => {
+        console.log(`socket disconnected with ID:${socket.id}`);
+    })
+
+    socket.on('logIn', (user) => {
+        socket.join(user)
+        console.log(`${user} joined the server with ID:${socket.id}`);
+    })
+
+    socket.on('new-message', (data) => {
+        console.log("message received ", data);
+        socket.to(data.userName).emit("message-received", data.newMsg)
+
+    })
+
+
+    // socket.broadcast.emit("welcome", `${socket.id} joined the server`)
 })
 
 

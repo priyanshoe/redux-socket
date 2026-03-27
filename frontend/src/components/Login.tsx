@@ -1,9 +1,10 @@
 'use client'
 
-import { logIn } from "@/redux/features/isLoggedIn";
+import { logIn, logOut } from "@/redux/features/isLoggedIn";
+import { socket } from "@/socket/io";
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
-import { io } from "socket.io-client"
+
 
 export default function Login() {
     const [name, setName] = useState("");
@@ -11,23 +12,18 @@ export default function Login() {
 
     function handleSubmit(e: any) {
         e.preventDefault();
+        socket.emit('logIn', name)
         // console.log(socket.id);
         dispatch(logIn(name))
-
     }
 
     useEffect(() => {
-        const socket = io("http://localhost:3030")
         socket.on('connect', () => {
-
-            console.log(socket.id);
+            console.log("Connected :" + socket.id);
         })
-        socket.on('welcome', (msg) => {
-            console.log(msg);
-
+        socket.on('disconnect', () => {
+            console.log("Disconnected :" + socket.id);
         })
-
-
     }, [])
 
     return (
@@ -46,5 +42,21 @@ export default function Login() {
             </div>
 
         </div>
+    )
+}
+
+export function LogOut() {
+    const dispatch = useDispatch();
+    function handleLogOut() {
+        dispatch(logOut())
+        socket.disconnect();
+        window.location.reload()
+    }
+    return (
+        <button
+            className="bg-gray-600 rounded-lg px-2 py-0.5 text-sm font-bold cursor-pointer"
+            onClick={handleLogOut}>
+            Logout
+        </button>
     )
 }
