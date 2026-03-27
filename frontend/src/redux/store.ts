@@ -1,11 +1,14 @@
 import { configureStore } from '@reduxjs/toolkit'
 import loggedReducer from './features/isLoggedIn'
 import chatBoxReducer from './features/chatBox'
+import { newMessageReducer, messageStackReducer } from './features/message'
 
 export const store = configureStore({
     reducer: {
         log: loggedReducer,
-        chatBox: chatBoxReducer
+        chatBox: chatBoxReducer,
+        newMessage: newMessageReducer,
+        message: messageStackReducer
     },
 })
 

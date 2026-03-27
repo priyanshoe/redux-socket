@@ -5,7 +5,7 @@ export const loggedSlice = createSlice({
     name: "loginData",
     initialState: {
         loggedIn: false,
-        name: "Priyansh"
+        name: ""
     },
     reducers: {
         logIn: (state, name: PayloadAction<string>) => {

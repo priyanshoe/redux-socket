@@ -12,8 +12,7 @@ export default function Login() {
 
     function handleSubmit(e: any) {
         e.preventDefault();
-        socket.emit('logIn', name)
-        // console.log(socket.id);
+        socket.emit('join', name)
         dispatch(logIn(name))
     }
 

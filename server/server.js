@@ -29,11 +29,19 @@ io.on("connection", (socket) => {
         console.log(`${user} joined the server with ID:${socket.id}`);
     })
 
-    socket.on('new-message', (data) => {
-        console.log("message received ", data);
-        socket.to(data.userName).emit("message-received", data.newMsg)
+    socket.on('join', (user) => {
+        socket.join(user)
+        console.log(`user joined ${user}`);
+
 
     })
+
+    socket.on('new-message', ({ newMsg, receiver, userName }) => {
+        console.log("message received ", newMsg, receiver, userName);
+        socket.to(receiver).emit("message-received", { newMsg, sender: userName, receiver })
+
+    })
+
 
 
     // socket.broadcast.emit("welcome", `${socket.id} joined the server`)

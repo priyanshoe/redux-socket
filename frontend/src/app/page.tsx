@@ -2,6 +2,7 @@
 
 import Login, { LogOut } from "@/components/Login"
 import { closeChat, openChat } from "@/redux/features/chatBox"
+import { pushMessage, setNewMessage } from "@/redux/features/message"
 import { RootState } from "@/redux/store"
 import { socket } from "@/socket/io"
 import Image from "next/image"
@@ -14,11 +15,14 @@ export default function Home() {
   const logged = useSelector((state: RootState) => state.log.loggedIn)
   const userName = useSelector((state: RootState) => state.log.name)
   const chatBox = useSelector((state: RootState) => state.chatBox.isOpen)
-  const chatName = useSelector((state: RootState) => state.chatBox.name)
+  const receiver = useSelector((state: RootState) => state.chatBox.receiver)
+  const messageStack = useSelector((state: RootState) => state.message);
+
   const dispatch = useDispatch();
 
   const [newMsg, setNewMsg] = useState("")
   const names = [
+    "asas",
     "Aarav adnsirna",
     "Vihaan adnsirna",
     "Kabir adnsirna",
@@ -32,20 +36,25 @@ export default function Home() {
   ]
 
   useEffect(() => {
-    socket.on('message-received', (msg) => {
-      console.log(`message received :${msg}`);
+    socket.on('message-received', ({ newMsg, sender, receiver }) => {
+      console.log(`message received :${newMsg}`);
+      dispatch(pushMessage({ sender: sender, receiver: receiver, message: newMsg }))
 
     })
   }, [])
 
-  function handleOpenChat(data: string) {
-    dispatch(openChat(data))
+  function handleOpenChat(receiver: string) {
+    dispatch(openChat({ receiver }))
   }
 
   function sendMsg(e: any) {
     e.preventDefault();
+    dispatch(setNewMessage({ sender: userName, receiver: receiver, message: newMsg }))
+    dispatch(pushMessage({ sender: userName, receiver: receiver, message: newMsg }))
+
     console.log("message sent," + newMsg);
-    socket.emit('new-message', { newMsg, userName })
+    socket.emit('new-message', { newMsg, receiver, userName })
+
     setNewMsg("")
 
   }
@@ -80,7 +89,7 @@ export default function Home() {
               <nav className="w-full h-2/30 flex justify-between items-center px-6 py-3 bg-blue-800">
                 <div className="flex gap-2 items-center">
                   <Image src='/profile.svg' alt="profile" width={42} height={42} className="bg-white rounded-full border-3 border-green-500" />
-                  <h3 className="text-lg ">{chatName}</h3>
+                  <h3 className="text-lg ">{receiver}</h3>
                 </div>
                 <button
                   onClick={() => dispatch(closeChat())}
@@ -89,7 +98,16 @@ export default function Home() {
                 </button>
               </nav>
 
-              <div id="chat-space" className="h-26/30 w-full">
+              <div id="chat-space" className="h-26/30 w-full p-1">
+                {
+                  messageStack.map((item, id) => (
+                    <div key={id} className={`${item.sender === userName ? 'bg-green-700 justify-self-end' : 'bg-blue-700 justify-self-start'} flex gap-3 w-fit px-3 py-0.5 mt-1 rounded-2xl`}>
+                      {/* <h1>{item.sender}</h1> */}
+                      <h3>{item.message}</h3>
+                      {/* <h3>{item.receiver}</h3> */}
+                    </div>
+                  ))
+                }
 
               </div>
 

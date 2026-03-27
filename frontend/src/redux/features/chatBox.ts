@@ -5,16 +5,16 @@ export const chatBoxSlice = createSlice({
     name: "chatBox",
     initialState: {
         isOpen: false,
-        name: "Demo"
+        receiver: ""
     },
     reducers: {
-        openChat: (state, name: PayloadAction<string>) => {
+        openChat: (state, actions: PayloadAction<{ receiver: string }>) => {
             state.isOpen = true,
-                state.name = name.payload
+                state.receiver = actions.payload.receiver
         },
         closeChat: (state) => {
             state.isOpen = false,
-                state.name = ""
+                state.receiver = ""
         }
     }
 })
