@@ -1,56 +1,35 @@
-import express from "express"
-import dotenv from "dotenv";
-import { createServer } from "http"
-import { Server } from "socket.io";
-dotenv.config();
+import express from "express";
+import { createServer } from "http";
+import connectSocket from "./src/socket/connect.socket.js"
+import cookieParser from "cookie-parser";
+
+// CONFIG ENV
+// import dotenv from "dotenv";
+// dotenv.config();
 const PORT = process.env.SERVER_PORT || 4176;
 
+//  CREATE SERVER (EXPRESS => SOCKET)
 const app = express();
-
-// socketIO connection
 const server = createServer(app);
-const io = new Server(server, {
-    cors: {
-        origin: "http://localhost:3000",
-        methods: ["GET", "POST"],
-        credentials: true
-    }
+connectSocket(server)
 
-});
+// MIDDLEWARES
+app.use(express.json())
+app.use(cookieParser())
 
-io.on("connection", (socket) => {
-    console.log(`socket connected with ID:${socket.id}`);
-    socket.on('disconnect', () => {
-        console.log(`socket disconnected with ID:${socket.id}`);
-    })
-
-    socket.on('logIn', (user) => {
-        socket.join(user)
-        console.log(`${user} joined the server with ID:${socket.id}`);
-    })
-
-    socket.on('join', (user) => {
-        socket.join(user)
-        console.log(`user joined ${user}`);
-
-
-    })
-
-    socket.on('new-message', ({ newMsg, receiver, userName }) => {
-        console.log("message received ", newMsg, receiver, userName);
-        socket.to(receiver).emit("message-received", { newMsg, sender: userName, receiver })
-
-    })
-
-
-
-    // socket.broadcast.emit("welcome", `${socket.id} joined the server`)
-})
-
-
+// START SERVER
 server.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
 })
+// CHECK ROUTE
 app.get('/', (req, res) => {
     return res.status(200).json({ message: "Routes working" })
 })
+
+// AUTH ROUTES
+import authRouts from "./src/routes/auth.routes.js"
+app.use('/api/auth', authRouts)
+
+// UTILS ROUTE
+import utilsRouts from "./src/routes/utils.routes.js"
+app.use('/api', utilsRouts)
