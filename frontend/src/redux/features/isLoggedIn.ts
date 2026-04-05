@@ -4,8 +4,8 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 export const loggedSlice = createSlice({
     name: "loginData",
     initialState: {
-        loggedIn: false,
-        name: ""
+        loggedIn: true,
+        name: "Demo"
     },
     reducers: {
         logIn: (state, name: PayloadAction<string>) => {

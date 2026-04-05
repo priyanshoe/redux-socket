@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
 :root {
-  --background: hsl(35, 74%, 95%);
+  --background: hsl(35, 75%, 95%);
   --foreground: hsl(0, 0%, 0%);
   --foreground-secondary: hsl(0, 0%, 60%);
   --container-bg: hsl(0, 0%, 100%);
@@ -11,14 +11,26 @@
   --input-bg: hsl(0, 0%, 100%);
   --input-border: hsl(0, 0%, 0%);
   --input-text: hsl(0, 0%, 0%);
+  --sidebar-bg: hsl(30, 20%, 96%);
+  --chatBox-bg: hsl(0, 0%, 100%);
+  --chatBox-border: hsl(35, 20%, 83%);
 }
 
 
-@media (prefers-color-scheme: light) {
+@media (prefers-color-scheme: dark) {
   :root {
     --background: #0a0a0a;
     --foreground: #ededed;
   --container-bg: hsl(0, 0%, 10%);
+  --container-border: hsl(0, 0%, 0%);
+  --button-bg: hsl(142, 70%, 50%);
+  --button-border: hsl(0, 0%, 0%);
+  --input-bg: hsl(0, 0%, 100%);
+  --input-border: hsl(0, 0%, 0%);
+  --input-text: hsl(0, 0%, 0%);
+  --sidebar-bg: hsl(30, 20%, 96%);
+  --chatBox-bg: hsl(180, 2%, 9%);
+  --chatBox-border: hsl(35, 20%, 83%);
   }
 }
 
