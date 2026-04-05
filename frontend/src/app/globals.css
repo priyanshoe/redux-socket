@@ -1,15 +1,24 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: hsl(35, 74%, 95%);
+  --foreground: hsl(0, 0%, 0%);
+  --foreground-secondary: hsl(0, 0%, 60%);
+  --container-bg: hsl(0, 0%, 100%);
+  --container-border: hsl(0, 0%, 0%);
+  --button-bg: hsl(142, 70%, 50%);
+  --button-border: hsl(0, 0%, 0%);
+  --input-bg: hsl(0, 0%, 100%);
+  --input-border: hsl(0, 0%, 0%);
+  --input-text: hsl(0, 0%, 0%);
 }
 
 
-@media (prefers-color-scheme: dark) {
+@media (prefers-color-scheme: light) {
   :root {
     --background: #0a0a0a;
     --foreground: #ededed;
+  --container-bg: hsl(0, 0%, 10%);
   }
 }
 
